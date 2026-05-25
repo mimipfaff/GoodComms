@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Management</title>
+  <title>GoodComms</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
-    .app-header{background:#bae6fd;color:#0c4a6e;padding:0 24px;display:flex;align-items:center;gap:32px;height:60px;position:sticky;top:0;z-index:50;border-bottom:1px solid #7dd3fc}
-    .app-title{font-size:1.15rem;font-weight:700;white-space:nowrap}
+    .app-header{background:#010956;color:#fff;padding:0 24px;display:flex;align-items:center;gap:32px;height:60px;position:sticky;top:0;z-index:50;border-bottom:1px solid #0a1a7a}
+    .app-logo{height:38px;display:block}
     .nav-tabs{display:flex;gap:4px}
-    .nav-tab{background:transparent;border:none;color:rgba(12,74,110,.6);padding:8px 18px;cursor:pointer;border-radius:6px;font-size:.9rem;transition:all .15s}
-    .nav-tab:hover{background:rgba(12,74,110,.1);color:#0c4a6e}
-    .nav-tab.active{background:rgba(12,74,110,.15);color:#0c4a6e;font-weight:600}
+    .nav-tab{background:transparent;border:none;color:rgba(255,255,255,.65);padding:8px 18px;cursor:pointer;border-radius:6px;font-size:.9rem;transition:all .15s}
+    .nav-tab:hover{background:rgba(255,255,255,.12);color:#fff}
+    .nav-tab.active{background:rgba(255,255,255,.2);color:#fff;font-weight:600}
     .main{padding:24px;max-width:1500px;margin:0 auto}
     .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
     .toolbar h2{font-size:1.4rem;font-weight:700}
@@ -21,19 +22,20 @@
     .controls-label{font-size:.8rem;font-weight:600;color:#6b7280;white-space:nowrap}
     .controls-sep{width:1px;height:20px;background:#e2e8f0;margin:0 4px}
     .btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-size:.875rem;font-weight:500;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
-    .btn-primary{background:#bae6fd;color:#0c4a6e;border:1px solid #7dd3fc}.btn-primary:hover{background:#7dd3fc}
+    .btn-primary{background:#010956;color:#fff;border:1px solid #010956}.btn-primary:hover{background:#0a1a7a}
     .btn-success{background:#16a34a;color:#fff}.btn-success:hover{background:#15803d}
     .btn-warning{background:#ea580c;color:#fff}.btn-warning:hover{background:#c2410c}
     .btn-danger{background:#dc2626;color:#fff}.btn-danger:hover{background:#b91c1c}
     .btn-secondary{background:#e2e8f0;color:#475569}.btn-secondary:hover{background:#cbd5e1}
     .btn-ghost{background:transparent;border:1px solid #cbd5e1;color:#475569}.btn-ghost:hover{background:#f1f5f9}
-    .btn-edit{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd}.btn-edit:hover{background:#e0f2fe}
+    .btn-edit{background:#eef0ff;color:#010956;border:1px solid #c7cbf0}.btn-edit:hover{background:#d8dcf8}
     .btn-del{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}.btn-del:hover{background:#fee2e2}
     .btn-sm{padding:4px 10px;font-size:.78rem}
     .btn-ncr{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}.btn-ncr:hover{background:#dcfce7}
+    .btn-icon{width:28px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;border:none;cursor:pointer;flex-shrink:0;transition:all .15s}
     /* ---- List rows ---- */
     .clients-list{display:flex;flex-direction:column;gap:6px}
-    .client-row{background:#fff;border-radius:8px;padding:13px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;border-left:4px solid transparent;transition:box-shadow .15s}
+    .client-row{background:#fff;border-radius:8px;padding:13px 16px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:14px;border-left:4px solid transparent;transition:box-shadow .15s;cursor:pointer}
     .client-row:hover{box-shadow:0 3px 10px rgba(0,0,0,.1)}
     .client-row.row-red{border-left-color:#dc2626}
     .client-row.row-orange{border-left-color:#ea580c}
@@ -87,14 +89,14 @@
     .form-group{margin-bottom:14px}
     .form-label{display:block;font-size:.875rem;font-weight:600;color:#374151;margin-bottom:5px}
     .form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:.875rem;outline:none;transition:border-color .15s;font-family:inherit;background:#fff}
-    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#0ea5e9}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#010956}
     .form-textarea{resize:vertical;min-height:76px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     /* ---- Smiley ---- */
     .smiley-selector{display:flex;gap:5px}
     .smiley-option{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 6px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:all .15s;flex:1}
-    .smiley-option:hover{border-color:#7dd3fc;background:#f0f9ff}
-    .smiley-option.selected{border-color:#0ea5e9;background:#e0f2fe}
+    .smiley-option:hover{border-color:#010956;background:#eef0ff}
+    .smiley-option.selected{border-color:#010956;background:#d8dcf8}
     .smiley-emoji{font-size:1.4rem}
     .smiley-label{font-size:.6rem;color:#6b7280;text-align:center;line-height:1.2}
     /* ---- Detail modal ---- */
@@ -130,7 +132,7 @@
     /* ---- Reports ---- */
     .report-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #e2e8f0}
     .report-tab{padding:10px 22px;background:none;border:none;cursor:pointer;font-size:.9rem;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
-    .report-tab.active{color:#0ea5e9;border-bottom-color:#0ea5e9;font-weight:600}
+    .report-tab.active{color:#010956;border-bottom-color:#010956;font-weight:600}
     .report-card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
     .report-controls{display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
     .chart-container{position:relative;height:360px}
@@ -154,7 +156,7 @@
 <body>
 
 <header class="app-header">
-  <div class="app-title">Client Management</div>
+  <img src="logo.png" alt="GoodComms" class="app-logo">
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('clients')">Clients</button>
     <button class="nav-tab" onclick="switchTab('reports')">Reports</button>
@@ -440,6 +442,10 @@
 </div>
 
 <script>
+// ==================== ICONS ====================
+const ICON_EDIT = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+const ICON_DEL  = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+
 // ==================== STATE ====================
 let clients = [];
 let currentClientId = null;
@@ -610,7 +616,7 @@ function renderClientRow(client) {
   ].join('');
 
   return `
-    <div class="client-row row-${indColor}">
+    <div class="client-row row-${indColor}" onclick="openClientDetail('${client.id}')">
       <div class="row-dot"><div class="indicator-dot dot-${indColor}"></div></div>
       <div class="row-name">
         <div class="row-client-name">${esc(client.name)}</div>
@@ -629,12 +635,11 @@ function renderClientRow(client) {
         <div>open issue${openI!==1?'s':''}</div>
       </div>
       <div class="row-warnings">${warnHtml}</div>
-      <div class="row-actions">
+      <div class="row-actions" onclick="event.stopPropagation()">
         ${showNcr ? `<button class="btn btn-sm btn-ncr" onclick="setNoContactRequired('${client.id}')">No Contact Required</button>` : ''}
         ${client.noContactRequired ? `<span class="badge" style="background:#f0fdf4;color:#16a34a;margin-right:4px">NCR</span>` : ''}
-        <button class="btn btn-sm btn-edit" onclick="openEditClientModal('${client.id}')">Edit</button>
-        <button class="btn btn-sm btn-del" onclick="deleteClient('${client.id}')">Delete</button>
-        <button class="btn btn-sm btn-secondary" onclick="openClientDetail('${client.id}')">Details</button>
+        <button class="btn-icon btn-edit" title="Edit client" onclick="openEditClientModal('${client.id}')">${ICON_EDIT}</button>
+        <button class="btn-icon btn-del" title="Delete client" onclick="deleteClient('${client.id}')">${ICON_DEL}</button>
       </div>
     </div>`;
 }
@@ -778,8 +783,8 @@ function renderContactsTab(client) {
         ${c.details?`<div class="contact-details-text">${esc(c.details)}</div>`:''}
         ${c.satisfactionScore!==null&&c.satisfactionScore!==undefined?`<div class="contact-score-text">Satisfaction: ${satLabel(c.satisfactionScore)} ${satEmoji(c.satisfactionScore)}</div>`:''}
         <div class="item-actions">
-          <button class="btn btn-sm btn-edit" onclick="openEditContactModal('${client.id}','${c.id}')">Edit</button>
-          <button class="btn btn-sm btn-del" onclick="deleteContact('${client.id}','${c.id}')">Delete</button>
+          <button class="btn-icon btn-edit" title="Edit contact" onclick="openEditContactModal('${client.id}','${c.id}')">${ICON_EDIT}</button>
+          <button class="btn-icon btn-del" title="Delete contact" onclick="deleteContact('${client.id}','${c.id}')">${ICON_DEL}</button>
         </div>
       </div>
     </div>`).join('');
@@ -817,8 +822,8 @@ function renderIssueItem(client, issue) {
           <button class="btn btn-sm btn-secondary" onclick="raiseIssueAgain('${client.id}','${issue.id}')">Raised Again</button>
           <button class="btn btn-sm btn-success" onclick="resolveIssue('${client.id}','${issue.id}')">Resolve</button>
         `:`<button class="btn btn-sm btn-warning" onclick="reopenIssue('${client.id}','${issue.id}')">Reopen</button>`}
-        <button class="btn btn-sm btn-edit" onclick="openEditIssueModal('${client.id}','${issue.id}')">Edit</button>
-        <button class="btn btn-sm btn-del" onclick="deleteIssue('${client.id}','${issue.id}')">Delete</button>
+        <button class="btn-icon btn-edit" title="Edit issue" onclick="openEditIssueModal('${client.id}','${issue.id}')">${ICON_EDIT}</button>
+        <button class="btn-icon btn-del" title="Delete issue" onclick="deleteIssue('${client.id}','${issue.id}')">${ICON_DEL}</button>
       </div>
     </div>`;
 }
