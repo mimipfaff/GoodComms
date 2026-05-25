@@ -488,7 +488,7 @@ function satEmoji(v) {
 
 // ==================== BUSINESS LOGIC ====================
 function getRequiredInterval(client) {
-  const lowSat = client.satisfactionMeter !== null && client.satisfactionMeter !== undefined && client.satisfactionMeter < 75;
+  const lowSat = client.satisfactionMeter !== null && client.satisfactionMeter !== undefined && client.satisfactionMeter < 65;
   return client.status === 'pilot' ? (lowSat ? 14 : 21) : (lowSat ? 60 : 90);
 }
 function getLastContactDate(client) {
@@ -508,10 +508,10 @@ function getIndicatorColor(client) {
   return st === 'overdue' ? 'red' : 'orange';
 }
 function isMeterGrayed(client) { return isContactOverdue(client); }
-function satColor(v) { if (v===null||v===undefined) return 'gray'; if (v<=25) return 'red'; if (v<75) return 'orange'; return 'green'; }
+function satColor(v) { if (v===null||v===undefined) return 'gray'; if (v<=25) return 'red'; if (v<65) return 'orange'; return 'green'; }
 function getSatisfactionWarning(client) {
   if (client.satisfactionMeter===null||client.satisfactionMeter===undefined) return null;
-  if (client.satisfactionMeter<=25) return 'red'; if (client.satisfactionMeter<75) return 'orange'; return null;
+  if (client.satisfactionMeter<=25) return 'red'; if (client.satisfactionMeter<65) return 'orange'; return null;
 }
 function issueMaxDays(u) { return {very_high:1,high:3,medium:7,low:30,very_low:90}[u]||7; }
 function isIssueOverdue(issue) { return issue.status!=='resolved' && daysAgo(issue.openedAt||issue.createdAt) > issueMaxDays(issue.urgency); }
